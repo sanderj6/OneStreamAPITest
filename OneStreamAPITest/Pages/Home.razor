@@ -1,0 +1,85 @@
+﻿@page "/"
+@using OneStreamAPITest.Data
+@using OneStreamAPITest.Services
+@using MudBlazor
+@inject StarWarsService StarWarsService
+@inject WeatherService WeatherService
+
+<div class="container">
+    <div class="d-flex justify-content-center">
+        <div class="col-12 col-md-8">
+
+            <div>
+                <h1>Welcome to the OneStream API Coding Assessment</h1>
+                <p>Select between the two API options below and the Blazor WebAssembly application will send a request to our Backend which will handle all calls to external API's'</p>
+            </div>
+
+            <MudTabs>
+                <MudTabPanel Text="Star Wars API">
+                    <MudPaper Class="pa-4">
+                        <MudText Typo="Typo.h6">Star Wars API</MudText>
+                        <MudTextField @bind-Value="_characterId" Label="Parameter" Variant="Variant.Outlined" />
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="(async() => await APISelected(ExternalAPI.StarWars))">Call API</MudButton>
+                        <MudText Typo="Typo.subtitle1">Result:</MudText>
+                        <MudText Typo="Typo.body1">@_api1Result</MudText>
+                    </MudPaper>
+                </MudTabPanel>
+
+                <MudTabPanel Text="Weather API">
+                    <MudPaper Class="pa-4">
+                        <MudText Typo="Typo.h6">Weather API</MudText>
+                        <MudTextField @bind-Value="_api2Parameter" Label="Parameter" Variant="Variant.Outlined" />
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="(async() => await APISelected(ExternalAPI.Weather))">Call API</MudButton>
+                        <MudText Typo="Typo.subtitle1">Result:</MudText>
+                        <MudText Typo="Typo.body1">@_api2Result</MudText>
+                    </MudPaper>
+                </MudTabPanel>
+            </MudTabs>
+        </div>
+    </div>
+</div>
+
+@code {
+    private string _characterId;
+    private string _api2Parameter;
+    private string _api1Result;
+    private string _api2Result;
+
+    public ExternalAPI CurrentAPI { get; set; }
+
+    private StarWarsCharacter _characterData { get; set; } = new();
+
+    private async Task CallApi1()
+    {
+        if (int.TryParse(_characterId, out int id))
+        {
+            _characterData = await StarWarsService.GetCharacterAsync(id);
+            _api1Result = _characterData.Name;
+        }
+        else
+        {
+            _characterData = null;
+            // Show an error message or handle invalid input
+        }
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task CallApi2()
+    {
+        _api2Result = await WeatherService.GetWeatherAsync(_api2Parameter);
+    }
+
+    private async Task APISelected(ExternalAPI externalAPI)
+    {
+        switch (externalAPI)
+        {
+            case ExternalAPI.StarWars:
+                break;
+            case ExternalAPI.Weather:
+                break;
+            default:
+                break;
+        }
+    }
+}
