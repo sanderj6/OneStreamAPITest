@@ -26,11 +26,11 @@ namespace OneStreamAPITest.Services
             }
             catch (HttpRequestException httpEx)
             {
-                throw new ApplicationException($"Error fetching character data: {httpEx.Message}");
+                return null;
             }
             catch (Exception ex)
             {
-                throw new ApplicationException($"An unexpected error occurred: {ex.Message}");
+                return null;
             }
         }
     }

@@ -1,9 +1,11 @@
 ﻿@page "/"
+@using OneStreamAPITest.Pages.Components
 @using OneStreamAPITest.Data
 @using OneStreamAPITest.Services
 @using MudBlazor
 @inject StarWarsService StarWarsService
 @inject WeatherService WeatherService
+@inherits PageBase<Home>
 
 <div class="container">
     <div class="d-flex justify-content-center">
@@ -14,25 +16,52 @@
                 <p>Select between the two API options below and the Blazor WebAssembly application will send a request to our Backend which will handle all calls to external API's'</p>
             </div>
 
+            @switch (CurrentAPI)
+            {
+                case ExternalAPI.StarWars:
+                    <p>Enter a random number to see what Star Wars character you get!</p>
+                    break;
+                case ExternalAPI.Weather:
+                    <p>Enter the name of a City to see that city's current weather.</p>
+                    break;
+                default:
+                    break;
+            }
+
+            <div class="text-warning">
+                @_errMessage
+            </div>
+
             <MudTabs>
                 <MudTabPanel Text="Star Wars API">
                     <MudPaper Class="pa-4">
                         <MudText Typo="Typo.h6">Star Wars API</MudText>
-                        <MudTextField @bind-Value="_characterId" Label="Parameter" Variant="Variant.Outlined" />
-                        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="(async() => await APISelected(ExternalAPI.StarWars))">Call API</MudButton>
-                        <MudText Typo="Typo.subtitle1">Result:</MudText>
-                        <MudText Typo="Typo.body1">@_api1Result</MudText>
+                        <MudTextField @bind-Value="_characterId" Label="Character ID" Variant="Variant.Outlined" Required="true" RequiredError="Character ID is required." Immediate="true" />
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@string.IsNullOrWhiteSpace(_characterId)" OnClick="(async() => await APISelected(ExternalAPI.StarWars))">Find Character</MudButton>
                     </MudPaper>
+
+                    @if (!string.IsNullOrEmpty(_characterData?.Name))
+                    {
+                        <div class="mt-4">
+                            <CharacterCard Model="@_characterData" />
+                        </div>
+                    }
+
                 </MudTabPanel>
 
                 <MudTabPanel Text="Weather API">
                     <MudPaper Class="pa-4">
                         <MudText Typo="Typo.h6">Weather API</MudText>
-                        <MudTextField @bind-Value="_api2Parameter" Label="Parameter" Variant="Variant.Outlined" />
-                        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="(async() => await APISelected(ExternalAPI.Weather))">Call API</MudButton>
-                        <MudText Typo="Typo.subtitle1">Result:</MudText>
-                        <MudText Typo="Typo.body1">@_api2Result</MudText>
+                        <MudTextField @bind-Value="_weatherCity" Label="City" Variant="Variant.Outlined" Required="true" RequiredError="City is required." Immediate="true" />
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@string.IsNullOrWhiteSpace(_weatherCity)" OnClick="(async() => await APISelected(ExternalAPI.Weather))">Get Weather</MudButton>
                     </MudPaper>
+
+                    @if (_weatherData?.location != null)
+                    {
+                        <div class="mt-4">
+                            <WeatherCard Model="@_weatherData" />
+                        </div>
+                    }
                 </MudTabPanel>
             </MudTabs>
         </div>
@@ -41,33 +70,52 @@
 
 @code {
     private string _characterId;
-    private string _api2Parameter;
-    private string _api1Result;
-    private string _api2Result;
+    private string _weatherCity;
+    private string _errMessage;
 
     public ExternalAPI CurrentAPI { get; set; }
 
     private StarWarsCharacter _characterData { get; set; } = new();
+    private WeatherResponse _weatherData { get; set; } = new();
 
-    private async Task CallApi1()
+    private async Task HandleStarWarsCall()
     {
         if (int.TryParse(_characterId, out int id))
         {
             _characterData = await StarWarsService.GetCharacterAsync(id);
-            _api1Result = _characterData.Name;
+
+            if(_characterData == null)
+            {
+                _errMessage = "Character does not exist. Please enter a valid integer.";
+            }
+            else
+            {
+                _errMessage = string.Empty;
+            }
         }
         else
         {
             _characterData = null;
-            // Show an error message or handle invalid input
         }
 
         await InvokeAsync(StateHasChanged);
     }
 
-    private async Task CallApi2()
+    private async Task HandleWeatherCall()
     {
-        _api2Result = await WeatherService.GetWeatherAsync(_api2Parameter);
+        _weatherData = await WeatherService.GetWeatherAsync(_weatherCity);
+
+        if (_weatherData == null)
+        {
+            _errMessage = "City does not exist. Please enter a valid city name.";
+        }
+        else
+        {
+            _errMessage = string.Empty;
+        }
+
+        await InvokeAsync(StateHasChanged);
+
     }
 
     private async Task APISelected(ExternalAPI externalAPI)
@@ -75,8 +123,10 @@
         switch (externalAPI)
         {
             case ExternalAPI.StarWars:
+                await HandleStarWarsCall();
                 break;
             case ExternalAPI.Weather:
+                await HandleWeatherCall();
                 break;
             default:
                 break;

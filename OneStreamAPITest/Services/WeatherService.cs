@@ -1,4 +1,7 @@
-﻿namespace OneStreamAPITest.Services
+﻿using OneStreamAPITest.Data;
+using System.Net.Http.Json;
+
+namespace OneStreamAPITest.Services
 {
     public class WeatherService
     {
@@ -9,9 +12,27 @@
             _httpClient = httpClient;
         }
 
-        public async Task<string> GetWeatherAsync(string city)
+        public async Task<WeatherResponse> GetWeatherAsync(string city)
         {
-            return await _httpClient.GetStringAsync($"api/weather/{city}");
+            try
+            {
+                var response = await _httpClient.GetAsync($"api/weather/{city}");
+
+                response.EnsureSuccessStatusCode();
+
+                var weatherData = await response.Content.ReadFromJsonAsync<WeatherResponse>();
+
+                return weatherData;
+            }
+            catch (HttpRequestException httpEx)
+            {
+                return null;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+
         }
     }
 }

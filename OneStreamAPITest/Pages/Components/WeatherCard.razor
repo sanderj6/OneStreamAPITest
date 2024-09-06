@@ -1,0 +1,40 @@
+﻿@using MudBlazor
+@using OneStreamAPITest.Data
+
+<MudPaper Class="pa-4">
+    <MudCardHeader>
+        <MudText Typo="Typo.h5">@Model.location.name, @Model.location.country</MudText>
+    </MudCardHeader>
+
+    <MudCardContent Class="col-12 col-lg-6">
+        <table class="table">
+            <tr>
+                <td>Temperature:</td>
+                <td>@Model.current.temp_c °C / @Model.current.temp_f °F</td>
+            </tr>
+            <tr>
+                <td>Condition:</td>
+                <td>@Model.current.condition.text</td>
+            </tr>
+            <tr>
+                <td>Wind Speed:</td>
+                <td>@Model.current.wind_kph km/h (@Model.current.wind_mph mph)</td>
+            </tr>
+            <tr>
+                <td>Humidity:</td>
+                <td>@Model.current.humidity %</td>
+            </tr>
+            <tr>
+                <td>Pressure:</td>
+                <td>@Model.current.pressure_mb mb</td>
+            </tr>
+        </table>
+    </MudCardContent>
+
+</MudPaper>
+
+@code {
+    [Parameter]
+    public WeatherResponse Model { get; set; }
+
+}

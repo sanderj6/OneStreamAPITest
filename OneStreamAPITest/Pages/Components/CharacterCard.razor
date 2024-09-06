@@ -1,0 +1,47 @@
+﻿@using MudBlazor
+@using OneStreamAPITest.Data
+
+<MudPaper Class="pa-4">
+    <MudCardHeader>
+        <MudText Typo="Typo.h5">@Model.Name</MudText>
+    </MudCardHeader>
+
+    <MudCardContent Class="col-12 col-lg-6">
+        <table class="table">
+            <tr>
+                <td>Height:</td>
+                <td>@Model.Height cm</td>
+            </tr>
+            <tr>
+                <td>Mass:</td>
+                <td>@Model.Mass kg</td>
+            </tr>
+            <tr>
+                <td>Hair Color:</td>
+                <td>@Model.HairColor</td>
+            </tr>
+            <tr>
+                <td>Eye Color:</td>
+                <td>@Model.EyeColor</td>
+            </tr>
+            <tr>
+                <td>Gender:</td>
+                <td>@Model.Gender</td>
+            </tr>
+        </table>
+    </MudCardContent>
+
+    <MudCardActions>
+        <MudButton Variant="Variant.Outlined" Color="Color.Primary" Href="@Model.Url" Target="_blank">More Info</MudButton>
+    </MudCardActions>
+</MudPaper>
+
+@code {
+    [Parameter]
+    public StarWarsCharacter Model { get; set; }
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        return base.OnAfterRenderAsync(firstRender);
+    }
+}

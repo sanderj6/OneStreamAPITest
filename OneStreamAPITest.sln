@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35027.167
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OneStreamAPITest", "OneStreamAPITest\OneStreamAPITest.csproj", "{780CCEA0-3801-4AD5-81B1-860B58F5358A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OneStreamAPITest", "OneStreamAPITest\OneStreamAPITest.csproj", "{780CCEA0-3801-4AD5-81B1-860B58F5358A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OneStreamAPITest.API", "OneStreamAPITest.API\OneStreamAPITest.API.csproj", "{AAD43802-7B10-4870-9833-C1D1AFDEF81C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OneStreamAPITest.API", "OneStreamAPITest.API\OneStreamAPITest.API.csproj", "{AAD43802-7B10-4870-9833-C1D1AFDEF81C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OneStreamAPITest.Tests", "OneStreamAPITest.Tests\OneStreamAPITest.Tests.csproj", "{093F5492-6394-400A-AB7D-50502994834C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OneStreamAPITest.Tests", "OneStreamAPITest.Tests\OneStreamAPITest.Tests.csproj", "{093F5492-6394-400A-AB7D-50502994834C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
