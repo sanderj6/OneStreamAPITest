@@ -11,6 +11,7 @@
     <div class="d-flex justify-content-center">
         <div class="col-12 col-md-8">
 
+            @* WELCOME MESSAGE *@
             <div>
                 <h1>Welcome to the OneStream API Coding Assessment</h1>
                 <p>Select between the two API options below and the Blazor WebAssembly application will send a request to our Backend which will handle all calls to external API's'</p>
@@ -28,6 +29,7 @@
                     break;
             }
 
+            @* ERROR MESSAGE && VALIDATION*@
             <div class="text-warning">
                 @_errMessage
             </div>
@@ -73,18 +75,37 @@
     private string _weatherCity;
     private string _errMessage;
 
-    public ExternalAPI CurrentAPI { get; set; }
+    public ExternalAPI CurrentAPI { get; set; } = ExternalAPI.StarWars;
 
     private StarWarsCharacter _characterData { get; set; } = new();
     private WeatherResponse _weatherData { get; set; } = new();
 
+    // Handle API call based on selection
+    private async Task APISelected(ExternalAPI externalAPI)
+    {
+        CurrentAPI = externalAPI;
+
+        switch (externalAPI)
+        {
+            case ExternalAPI.StarWars:
+                await HandleStarWarsCall();
+                break;
+            case ExternalAPI.Weather:
+                await HandleWeatherCall();
+                break;
+            default:
+                break;
+        }
+    }
+
+    // SWAPI Call
     private async Task HandleStarWarsCall()
     {
         if (int.TryParse(_characterId, out int id))
         {
             _characterData = await StarWarsService.GetCharacterAsync(id);
 
-            if(_characterData == null)
+            if (_characterData == null)
             {
                 _errMessage = "Character does not exist. Please enter a valid integer.";
             }
@@ -101,6 +122,7 @@
         await InvokeAsync(StateHasChanged);
     }
 
+    // Weather Call
     private async Task HandleWeatherCall()
     {
         _weatherData = await WeatherService.GetWeatherAsync(_weatherCity);
@@ -116,20 +138,5 @@
 
         await InvokeAsync(StateHasChanged);
 
-    }
-
-    private async Task APISelected(ExternalAPI externalAPI)
-    {
-        switch (externalAPI)
-        {
-            case ExternalAPI.StarWars:
-                await HandleStarWarsCall();
-                break;
-            case ExternalAPI.Weather:
-                await HandleWeatherCall();
-                break;
-            default:
-                break;
-        }
     }
 }

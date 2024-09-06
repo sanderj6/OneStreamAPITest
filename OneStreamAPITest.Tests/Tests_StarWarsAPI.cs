@@ -14,6 +14,7 @@ namespace OneStreamAPITest.Tests
             // Arrange
             var mockMessageHandler = new Mock<HttpMessageHandler>();
 
+            // Example SW Character
             var character = new StarWarsCharacter
             {
                 Name = "Luke Skywalker",
@@ -31,8 +32,8 @@ namespace OneStreamAPITest.Tests
                 .Protected()
                 .Setup<Task<HttpResponseMessage>>(
                     "SendAsync",
-                    It.IsAny<HttpRequestMessage>(),
-                    It.IsAny<CancellationToken>()
+                    ItExpr.IsAny<HttpRequestMessage>(),
+                    ItExpr.IsAny<CancellationToken>()
                 )
                 .ReturnsAsync(new HttpResponseMessage
                 {
@@ -60,17 +61,18 @@ namespace OneStreamAPITest.Tests
         {
             // Arrange
             var mockMessageHandler = new Mock<HttpMessageHandler>();
+
             mockMessageHandler
-                .Protected()
-                .Setup<Task<HttpResponseMessage>>(
-                    "SendAsync",
-                    It.IsAny<HttpRequestMessage>(),
-                    It.IsAny<CancellationToken>()
-                )
-                .ReturnsAsync(new HttpResponseMessage
-                {
-                    StatusCode = HttpStatusCode.NotFound
-                });
+             .Protected()
+             .Setup<Task<HttpResponseMessage>>(
+                 "SendAsync",
+                 ItExpr.IsAny<HttpRequestMessage>(),  // Matches any HttpRequestMessage
+                 ItExpr.IsAny<CancellationToken>()    // Matches any CancellationToken
+             )
+             .ReturnsAsync(new HttpResponseMessage
+             {
+                 StatusCode = HttpStatusCode.NotFound // or other status code
+             });
 
             var httpClient = new HttpClient(mockMessageHandler.Object)
             {
